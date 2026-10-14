@@ -20,16 +20,12 @@ def _start_session(prosper_file: str, pvt: dict):
     return c
 
 
-def _select_model(c, model: ChokeModel, extra_values: dict):
-    if model.code is None:
-        raise ValueError(f"Model {model.name} has no PROSPER code in models.py")
+def _select_model(c, model: ChokeModel):
     c.DoSet(TAG_METHOD, METHOD_PREDICT_RATE)
     c.DoSet(TAG_CHOKE_MODEL, model.code)
-    for extra in model.extra_inputs:
-        c.DoSet(extra.tag, float(extra_values[extra.name]))
 
 
-def run_model(well_df: pd.DataFrame, model: ChokeModel, extra_values: dict,
+def run_model(well_df: pd.DataFrame, model: ChokeModel,
               prosper_file: str, pvt: dict) -> pd.DataFrame:
     """Return well_df with `<model>_Liquid` and `<model>_Mass` columns."""
     out = well_df.copy()
@@ -40,7 +36,7 @@ def run_model(well_df: pd.DataFrame, model: ChokeModel, extra_values: dict,
 
     def start():
         c = _start_session(prosper_file, pvt)
-        _select_model(c, model, extra_values)
+        _select_model(c, model)
         return c
 
     c = start()
@@ -65,4 +61,6 @@ def run_model(well_df: pd.DataFrame, model: ChokeModel, extra_values: dict,
             c.disconnect()
         except Exception:
             pass
+    # oil rate = liquid rate x (1 - water cut)
+    out[f"{model.name}_Oil"] = out[liq] * (1 - out["WaterCut"])
     return out

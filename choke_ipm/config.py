@@ -28,11 +28,4 @@ PVT = {
 }
 
 # ---------------------------------------------------------------- models
-# ELF and PETROLEUM_EXPERTS are on by default. Any other model must be added
-# here on purpose; its extra inputs are then requested from the user.
-ENABLED_MODELS: list[str] = ["ELF", "PETROLEUM_EXPERTS"]
-
-# Extra inputs for non-default models, e.g.
-# {"GILBERT": {"Discharge coefficient": 0.85}}
-# Missing values are asked interactively (or fail with --no-prompt).
-EXTRA_INPUTS: dict[str, dict[str, float]] = {}
+MODELS_TO_RUN = ["ELF", "PETROLEUM_EXPERTS"]
