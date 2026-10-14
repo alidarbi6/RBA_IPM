@@ -1,0 +1,5 @@
+pandas
+openpyxl
+matplotlib
+numpy
+# openserver  (PETEX OpenServer python module; Windows + PROSPER only)
